@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
-import { Button, Card, Icon, Form } from "semantic-ui-react";
+import { Button, Card, Icon, Form, Popup } from "semantic-ui-react";
 
 //==============================================================================
 // Main Card
@@ -28,7 +28,14 @@ class MainCard extends React.Component {
         <Card fluid>
           <Card.Content>
             <Card.Header>Export Record IDs</Card.Header>
-            <Card.Description>Paste the search URL below.</Card.Description>
+            <Card.Description>
+              Paste the search URL below.{" "}
+              <Popup
+                trigger={<Icon name="question circle" />}
+                content="e.g.: https://corpus-synodalium.com/philologic/corpus/query?report=concordance&method=proxy&start=0&end=0&q=heading"
+                on="click"
+              />
+            </Card.Description>
             <br />
             <Form>
               <Form.Field>
