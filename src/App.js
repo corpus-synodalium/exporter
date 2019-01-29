@@ -46,7 +46,7 @@ class MainCard extends React.Component {
                 />
               </Form.Field>
               <Button onClick={this.handleSubmit} loading={this.props.loading}>
-                <Icon name="checkmark" /> Export
+                <Icon name="download" /> Export
               </Button>
             </Form>
           </Card.Content>
@@ -104,7 +104,7 @@ class App extends Component {
       })
       .then(data => {
         const ids = this.processData(data);
-        this.saveTextFile(ids, query);
+        this.saveTextFile(ids, query, url);
         this.setState({
           loading: false
         });
@@ -127,7 +127,6 @@ class App extends Component {
   };
 
   processData = ({ results }) => {
-    const totalHits = results.length;
     const uniqueIDs = new Set();
     results.forEach(result => {
       const { record_id } = result.metadata_fields;
@@ -139,10 +138,11 @@ class App extends Component {
   };
 
   // Save text blob with file-saver!
-  saveTextFile = (ids, query) => {
+  saveTextFile = (ids, query, url) => {
     const dateString = new Date().toISOString().substring(0, 10);
     const fileName = `${dateString}-${query.report}-${query.q}`;
     const blobData =
+      `${url}\n\n` +
       `Query String: ${query.q}\n` +
       `Report Type: ${query.report}\n` +
       `Total Hits: ${query.end}\n` +
