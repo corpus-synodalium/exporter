@@ -142,12 +142,12 @@ class App extends Component {
     const dateString = new Date().toISOString().substring(0, 10);
     const fileName = `${dateString}-${query.report}-${query.q}`;
     const blobData =
-      `${url}\n\n` +
-      `Query String: ${query.q}\n` +
-      `Report Type: ${query.report}\n` +
-      `Total Hits: ${query.end}\n` +
-      `Number of Unique Record IDs: ${ids.length}\n\n` +
-      ids.join("\n");
+      `${url}\r\n\r\n` +
+      `Query String: ${query.q}\r\n` +
+      `Report Type: ${query.report}\r\n` +
+      `Total Hits: ${query.end}\r\n` +
+      `Number of Unique Record IDs: ${ids.length}\r\n\r\n` +
+      ids.join("\r\n");
     const blob = new Blob([blobData], {
       type: "text/plain;charset=utf-8"
     });
