@@ -140,7 +140,7 @@ class App extends Component {
   // Save text blob with file-saver!
   saveTextFile = (ids, query, url) => {
     const dateString = new Date().toISOString().substring(0, 10);
-    const fileName = `${dateString}-${query.report}-${query.q}`;
+    const fileName = `${dateString}-${query.report}-${query.q}.txt`;
     const blobData =
       `${url}\r\n\r\n` +
       `Query String: ${query.q}\r\n` +
