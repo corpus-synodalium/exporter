@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
+import queryString from "query-string";
 import saveAs from "file-saver";
 import { Button, Card, Icon, Form, Popup } from "semantic-ui-react";
 
@@ -12,7 +13,7 @@ class MainCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: ""
+      url: props.inputURL
     };
   }
 
@@ -83,8 +84,10 @@ class MainCard extends React.Component {
 class App extends Component {
   constructor(props) {
     super(props);
+    const query = queryString.parse(window.location.search);
     this.state = {
-      loading: false
+      loading: false,
+      inputURL: query.url
     };
   }
 
@@ -160,6 +163,7 @@ class App extends Component {
     return (
       <div className="App">
         <MainCard
+          inputURL={this.state.inputURL}
           handleInputURL={this.handleInputURL}
           loading={this.state.loading}
         />
