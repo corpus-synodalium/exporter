@@ -30,11 +30,11 @@ class MainCard extends React.Component {
           <Card.Content>
             <Card.Header>Export Record IDs</Card.Header>
             <Card.Description>
-              Paste the search URL below.{" "}
+              Click export to download a text report.{" "}
               <Popup
                 trigger={<Icon name="question circle" />}
-                content="e.g.: https://corpus-synodalium.com/philologic/corpus/query?report=concordance&method=proxy&start=0&end=0&q=heading"
                 on="click"
+                content="The URL should be auto-filled for you below. If not, paste in the search URL from the PhiloLogic database."
               />
             </Card.Description>
             <br />
@@ -46,7 +46,7 @@ class MainCard extends React.Component {
                   onChange={this.handleChange}
                 />
               </Form.Field>
-              <Button onClick={this.handleSubmit} loading={this.props.loading}>
+              <Button onClick={this.handleSubmit} loading={this.props.loading} color="blue">
                 <Icon name="download" /> Export
               </Button>
             </Form>
