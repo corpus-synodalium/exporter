@@ -1,4 +1,6 @@
-# Record ID Exporter
+# Record ID Exporter 
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9ef68e57-c4ce-4922-81c1-11a40d81adc1/deploy-status)](https://app.netlify.com/sites/cosyn-export/deploys)
 
 ## About 
 
