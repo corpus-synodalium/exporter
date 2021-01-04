@@ -2,20 +2,30 @@
 }
 
 .main-card {
-  width: 400px;
-  height: 300px;
+    width: 400px;
+    height: 300px;
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 
-  margin: -150px 0 0 -200px;
+    margin: -150px 0 0 -200px;
 }
 
 .main-card .content {
-  padding: 25px !important;
+    padding: 25px !important;
 }
 
 .hdd-icons {
-  margin-right: 10px;
+    margin-right: 10px;
+}
+
+.export-dropdown {
+    width: 230px;
+}
+
+.export-container {
+    margin: 16px 0;
+    display: flex;
+    justify-content: space-between;
 }
