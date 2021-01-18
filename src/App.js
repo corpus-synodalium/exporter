@@ -144,6 +144,7 @@ class App extends Component {
     // BEGIN: handle input URL -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     handleInputURL = url => {
+        // Get only 1 result (end=1) to save time. We want to know total count of results.
         const testURL = url.replace('end=0', 'end=1').concat('&format=json');
         let query = null;
         this.setState({ loading: true });
@@ -151,11 +152,17 @@ class App extends Component {
             .get(testURL)
             .then(response => response.data)
             .then(testData => {
-                query = testData.query;
-                query.end = testData.results_length;
-                return this.fetchData(query);
+                // Now we know total count; Fetch all results
+                const totalCount = testData.results_length;
+                return axios.get(
+                    url
+                        .replace('end=0', `end=${totalCount}`)
+                        .concat('&format=json')
+                );
             })
+            .then(response => response.data)
             .then(data => {
+                query = data.query;
                 this.saveTextFile(data, query, url);
                 this.setState({
                     loading: false,
@@ -164,17 +171,9 @@ class App extends Component {
             .catch(error => {
                 console.error(error);
                 this.setState({ loading: false });
-                window.alert('Invalid URL');
-            });
-    };
-
-    fetchData = query => {
-        const baseURL = 'https://corpus-synodalium.com/philologic/corpus/query';
-        return axios
-            .get(baseURL, { params: query })
-            .then(response => response.data)
-            .catch(error => {
-                console.error(error);
+                window.alert(
+                    'Sorry... there was an error 🤯. Please make sure the URL is correct.'
+                );
             });
     };
 
