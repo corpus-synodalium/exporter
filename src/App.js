@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import React, { Component } from 'react';
 import { Button, Card, Dropdown, Form, Icon, Popup } from 'semantic-ui-react';
 import './App.css';
+import { getSortedIds, getCitation, getShortRecords } from './export-utils';
 
 //==============================================================================
 // Main Card
@@ -18,6 +19,10 @@ const EXPORT_MODES = {
      * Export metadata fields in citation format for each
      */
     CITATION: 'CITATION',
+    /**
+     * Export a list of unique record IDs along with their metadata
+     */
+    SHORT_RECORD: 'SHORT_RECORD',
 };
 
 const DROPDOWN_OPTIONS = [
@@ -30,7 +35,11 @@ const DROPDOWN_OPTIONS = [
         key: EXPORT_MODES.CITATION,
         text: 'Citation',
         value: EXPORT_MODES.CITATION,
-        selected: true,
+    },
+    {
+        key: EXPORT_MODES.SHORT_RECORD,
+        text: 'Short record',
+        value: EXPORT_MODES.SHORT_RECORD,
     },
 ];
 class MainCard extends React.Component {
@@ -52,13 +61,10 @@ class MainCard extends React.Component {
             <div className="main-card">
                 <Card fluid>
                     <Card.Content>
-                        <Card.Header>
-                            {this.props.exportMode === EXPORT_MODES.ID
-                                ? 'Export Record IDs'
-                                : 'Export Citations'}
-                        </Card.Header>
+                        <Card.Header>Export References</Card.Header>
                         <Card.Description>
-                            Click export to download a text report.{' '}
+                            Choose export mode in the dropdown and click
+                            "Export"{' '}
                             <Popup
                                 trigger={<Icon name="question circle" />}
                                 on="click"
@@ -131,7 +137,7 @@ class App extends Component {
         this.state = {
             loading: false,
             inputURL: query.url,
-            exportMode: EXPORT_MODES.CITATION,
+            exportMode: EXPORT_MODES.SHORT_RECORD,
         };
     }
 
@@ -172,45 +178,9 @@ class App extends Component {
                 console.error(error);
                 this.setState({ loading: false });
                 window.alert(
-                    'Sorry... there was an error 🤯. Please make sure the URL is correct.'
+                    'Oops... there was an error. Please make sure the URL is correct.'
                 );
             });
-    };
-
-    getSortedIds = results => {
-        const uniqueIDs = new Set();
-        results.forEach(result => {
-            const { record_id } = result.metadata_fields;
-            uniqueIDs.add(record_id);
-        });
-        const ids = Array.from(uniqueIDs);
-        ids.sort();
-        return ids;
-    };
-
-    getCitation = results => {
-        const uniqueCitations = new Map();
-        results.forEach(result => {
-            const {
-                record_id,
-                origPlace,
-                year,
-                edition,
-                source,
-            } = result.metadata_fields;
-
-            if (!uniqueCitations.has(record_id)) {
-                /**
-                 * Format: Place (Year), in [Edition; if Edition field is empty, then instead display Source]
-                 */
-                const citationString = `${origPlace} (${year}), in ${
-                    edition ? edition : source
-                }`;
-                uniqueCitations.set(record_id, citationString);
-            }
-        });
-
-        return [...uniqueCitations.values()];
     };
 
     // Save text blob with file-saver!
@@ -221,13 +191,17 @@ class App extends Component {
         let processedData = null;
 
         if (this.state.exportMode === EXPORT_MODES.ID) {
-            const ids = this.getSortedIds(data.results);
+            const ids = getSortedIds(data.results);
             uniqueIdCount = ids.length;
             processedData = ids.join('\r\n');
         } else if (this.state.exportMode === EXPORT_MODES.CITATION) {
-            const citations = this.getCitation(data.results);
+            const citations = getCitation(data.results);
             uniqueIdCount = citations.length;
             processedData = citations.join('\r\n');
+        } else if (this.state.exportMode === EXPORT_MODES.SHORT_RECORD) {
+            const shortRecords = getShortRecords(data.results, url);
+            uniqueIdCount = shortRecords.length;
+            processedData = shortRecords.join('\r\n');
         }
 
         if (processedData) {
