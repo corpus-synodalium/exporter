@@ -1,19 +1,12 @@
-.App {
+.main-card-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .main-card {
-    width: 400px;
-    height: 300px;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    margin: -150px 0 0 -200px;
-}
-
-.main-card .content {
-    padding: 25px !important;
+    width: 600px;
 }
 
 .hdd-icons {
@@ -21,7 +14,7 @@
 }
 
 .export-dropdown {
-    width: 230px;
+    width: 450px;
 }
 
 .export-container {

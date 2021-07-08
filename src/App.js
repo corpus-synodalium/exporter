@@ -2,7 +2,7 @@ import axios from 'axios';
 import saveAs from 'file-saver';
 import queryString from 'query-string';
 import React, { Component } from 'react';
-import { Button, Card, Dropdown, Form, Icon, Popup } from 'semantic-ui-react';
+import { Button, Card, Dropdown, Form, Icon, Message } from 'semantic-ui-react';
 import './App.css';
 import { getSortedIds, getCitation, getShortRecords } from './export-utils';
 
@@ -12,13 +12,13 @@ import { getSortedIds, getCitation, getShortRecords } from './export-utils';
 
 const EXPORT_MODES = {
     /**
-     * Export a list of unique record IDs
-     */
-    ID: 'ID',
-    /**
      * Export metadata fields in citation format for each
      */
     CITATION: 'CITATION',
+    /**
+     * Export a list of unique record IDs
+     */
+    ID: 'ID',
     /**
      * Export a list of unique record IDs along with their metadata
      */
@@ -27,14 +27,14 @@ const EXPORT_MODES = {
 
 const DROPDOWN_OPTIONS = [
     {
-        key: EXPORT_MODES.ID,
-        text: 'Record ID',
-        value: EXPORT_MODES.ID,
-    },
-    {
         key: EXPORT_MODES.CITATION,
         text: 'Citation',
         value: EXPORT_MODES.CITATION,
+    },
+    {
+        key: EXPORT_MODES.ID,
+        text: 'Record ID',
+        value: EXPORT_MODES.ID,
     },
     {
         key: EXPORT_MODES.SHORT_RECORD,
@@ -58,69 +58,83 @@ class MainCard extends React.Component {
 
     render() {
         return (
-            <div className="main-card">
-                <Card fluid>
-                    <Card.Content>
-                        <Card.Header>Export References</Card.Header>
-                        <Card.Description>
-                            Choose export mode in the dropdown and click
-                            "Export"{' '}
-                            <Popup
-                                trigger={<Icon name="question circle" />}
-                                on="click"
-                                content="The URL should be auto-filled for you below. If not, paste in the search URL from the PhiloLogic database."
-                            />
-                        </Card.Description>
-                        <br />
-                        <Form>
-                            <Form.Field>
-                                <input
-                                    type="text"
-                                    placeholder="URL from PhiloLogic"
-                                    value={this.state.url}
-                                    onChange={this.handleInputChange}
-                                />
-                            </Form.Field>
-                        </Form>
-                        <div className="export-container">
-                            <Dropdown
-                                placeholder="Export Mode"
-                                selection
-                                value={this.props.exportMode}
-                                options={DROPDOWN_OPTIONS}
-                                onChange={this.props.handleDropdownChange}
-                                className="export-dropdown"
-                            ></Dropdown>
-                            <Button
-                                onClick={this.handleSubmit}
-                                loading={this.props.loading}
-                                color="blue"
+            <div className="main-card-container">
+                <div className="main-card">
+                    <Card fluid>
+                        <Card.Content>
+                            <Card.Header>Export References</Card.Header>
+                            <Card.Description>
+                                Choose export mode in the dropdown and click
+                                "Export".
+                            </Card.Description>
+                            <br />
+                            <Form>
+                                <Form.Field>
+                                    <input
+                                        type="text"
+                                        placeholder="Paste the search URL from CoSyn database here"
+                                        value={this.state.url}
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Form.Field>
+                            </Form>
+                            <div className="export-container">
+                                <Dropdown
+                                    placeholder="Export Mode"
+                                    selection
+                                    value={this.props.exportMode}
+                                    options={DROPDOWN_OPTIONS}
+                                    onChange={this.props.handleDropdownChange}
+                                    className="export-dropdown"
+                                ></Dropdown>
+                                <Button
+                                    onClick={this.handleSubmit}
+                                    loading={this.props.loading}
+                                    color="blue"
+                                >
+                                    <Icon name="download" /> Export
+                                </Button>
+                            </div>
+                        </Card.Content>
+                        <Card.Content extra>
+                            <a
+                                className="hdd-icons"
+                                href="https://corpus-synodalium.com/philologic/corpus/"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
-                                <Icon name="download" /> Export
-                            </Button>
-                        </div>
-                    </Card.Content>
-                    <Card.Content extra>
-                        <a
-                            className="hdd-icons"
-                            href="https://corpus-synodalium.com/philologic/corpus/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Icon name="hdd" />
-                            Corpus
-                        </a>
-                        <a
-                            className="hdd-icons"
-                            href="https://corpus-synodalium.com/philologic/corpusnorm/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Icon name="hdd outline" />
-                            Corpusnorm
-                        </a>
-                    </Card.Content>
-                </Card>
+                                <Icon name="hdd" />
+                                Corpus
+                            </a>
+                            <a
+                                className="hdd-icons"
+                                href="https://corpus-synodalium.com/philologic/corpusnorm/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Icon name="hdd outline" />
+                                Corpusnorm
+                            </a>
+                        </Card.Content>
+                    </Card>
+                    <Message>
+                        <Message.Header>Export modes</Message.Header>
+                        <Message.List>
+                            <Message.Item>
+                                Citation: Export abbreviated citations for
+                                search results
+                            </Message.Item>
+                            <Message.Item>
+                                Record ID: Export a list of unique Record IDs
+                                from search results
+                            </Message.Item>
+                            <Message.Item>
+                                Short Record: Export unique Record IDs with
+                                associated metadata
+                            </Message.Item>
+                        </Message.List>
+                    </Message>
+                </div>
             </div>
         );
     }
@@ -137,7 +151,7 @@ class App extends Component {
         this.state = {
             loading: false,
             inputURL: query.url,
-            exportMode: EXPORT_MODES.SHORT_RECORD,
+            exportMode: EXPORT_MODES.CITATION,
         };
     }
 
@@ -150,6 +164,12 @@ class App extends Component {
     // BEGIN: handle input URL -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     handleInputURL = url => {
+        if (!url) {
+            window.alert(
+                'URL cannot be empty. Please paste the search URL from the database here.'
+            );
+            return;
+        }
         // Get only 1 result (end=1) to save time. We want to know total count of results.
         const testURL = url.replace('end=0', 'end=1').concat('&format=json');
         let query = null;
