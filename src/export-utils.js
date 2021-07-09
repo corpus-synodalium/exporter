@@ -15,7 +15,8 @@ export const getCitation = results => {
         const {
             record_id,
             origPlace,
-            year,
+            origDate,
+            // year,
             edition,
             source,
         } = result.metadata_fields;
@@ -24,7 +25,7 @@ export const getCitation = results => {
             /**
              * Format: Place (Year), in [Edition; if Edition field is empty, then instead display Source]
              */
-            const citationString = `${origPlace} (${year}), in ${
+            const citationString = `${origPlace} (${origDate}), in ${
                 edition ? edition : source
             }`;
             uniqueCitations.set(record_id, citationString);
@@ -77,13 +78,13 @@ export const getShortRecords = (results, url) => {
             // head,
             issuing_authority,
             language,
-            // origDate,
+            origDate,
             origPlace,
             province,
             record_id,
             source,
             // title,
-            year,
+            // year,
         } = result.metadata_fields;
 
         if (!uniqueCitations.has(record_id)) {
@@ -96,8 +97,9 @@ export const getShortRecords = (results, url) => {
                 const numHits = getNumberOfHitsForRecord(record_id);
                 lines.push(`Number of hits: ${numHits}`);
             }
-            if (year) {
-                lines.push(`Year: ${year}`);
+            if (origDate) {
+                // Note: Use "origDate" for Year value
+                lines.push(`Year: ${origDate}`);
             }
             if (origPlace) {
                 lines.push(`Place: ${origPlace}`);

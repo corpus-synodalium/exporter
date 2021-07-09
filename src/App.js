@@ -62,7 +62,9 @@ class MainCard extends React.Component {
                 <div className="main-card">
                     <Card fluid>
                         <Card.Content>
-                            <Card.Header>Export References</Card.Header>
+                            <Card.Header className="card-header">
+                                Export References
+                            </Card.Header>
                             <Card.Description>
                                 Choose export mode in the dropdown and click
                                 "Export".

@@ -6,7 +6,11 @@
 }
 
 .main-card {
-    width: 600px;
+    width: 500px;
+}
+
+.card-header {
+    padding-top: 6px;
 }
 
 .hdd-icons {
@@ -14,7 +18,7 @@
 }
 
 .export-dropdown {
-    width: 450px;
+    width: 350px;
 }
 
 .export-container {
